@@ -4,28 +4,27 @@ namespace App\Controller;
 
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
-use Prometheus\Storage\InMemory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MetricsController {
-    private $registry;
+    private CollectorRegistry $registry;
 
     public function __construct() {
-        // Use InMemory or another adapter (Redis, APC)
-        $this->registry = new CollectorRegistry(new InMemory());
+        $this->registry = new CollectorRegistry();
     }
 
-    /**
-     * @Route("/metrics", name="metrics")
-     */
+    #[Route('/metrics', name: 'metrics')]
     public function metrics(): Response {
-        $counter = $this->registry->getOrRegisterCounter('app', 'requests_total', 'Total number of requests');
+        $counter = $this->registry->getOrRegisterCounter('app', 'hits_total', 'Total number of hits');
+
         $counter->inc();
 
         $renderer = new RenderTextFormat();
-        $result = $renderer->render($this->registry->getMetricFamilySamples());
+        $metrics = $renderer->render($this->registry->getMetricFamilySamples());
 
-        return new Response($result, 200, ['Content-Type' => RenderTextFormat::MIME_TYPE]);
+        return new Response($metrics, 200, [
+            'Content-Type' => RenderTextFormat::MIME_TYPE,
+        ]);
     }
 }
