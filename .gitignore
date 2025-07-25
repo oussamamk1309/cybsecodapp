@@ -24,3 +24,5 @@ Jenkinsfile
 
 ###> Ignore sonar-project.properties
 sonar-project.properties
+
+docker/*
