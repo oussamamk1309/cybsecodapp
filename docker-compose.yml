@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: nexus.local:5000/app:latest
+    image: nexus.local:5000/myapp:latest
     ports:
       - "8000:80"
     networks:
