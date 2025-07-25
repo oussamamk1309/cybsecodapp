@@ -6,12 +6,14 @@ use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Prometheus\Storage\InMemory;
 
 class MetricsController {
     private CollectorRegistry $registry;
 
     public function __construct() {
-        $this->registry = new CollectorRegistry();
+        $adapter = new InMemory();
+        $this->registry = new CollectorRegistry($adapter);
     }
 
     #[Route('/metrics', name: 'metrics')]
